@@ -6,13 +6,14 @@ import org.testng.AssertJUnit;
 import com.base.BaseClass;
 import com.configuration.Config;
 import com.pom.TableData;
-import com.pom.TableHandler;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import com.google.gson.Gson;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,8 @@ public class TestClass<List> {
         Thread.sleep(2000);
         td.clickRefreshTable();
 
+        //java.util.List<Config> expectedDataList = (java.util.List<Config>) parseConfigData(Config.jsonData);
+
         //WebElement table = driver.findElement(By.id("dynamictable"));
 
         WebElement table = driver.findElement(By.xpath("//table"));
@@ -51,30 +54,44 @@ public class TestClass<List> {
 
 //        ///html/body/div/div[3]/div/table/tr[1]
 //
-         for (WebElement row : rows) {
+        java.util.List<Config> expectedDataList = parseConfigData(Config.jsonData);
+
+        for (int i = 1; i < rows.size(); i++) { // Start from the second row (index 1)
+            WebElement row = rows.get(i);
             java.util.List<WebElement> cells = row.findElements(By.tagName("td"));
             // System.out.println(cells.size());
-            if (cells.size() == 3) {
+            if (cells.size() == 3 && i < expectedDataList.size() ) { //&& i < expectedDataList.size()
                 String name = cells.get(0).getText();
                 int age = Integer.parseInt(cells.get(1).getText());
                 String gender = cells.get(2).getText();
 
                 System.out.println(name +"   "+age+"   "+gender);
 
-                Config con = new Config(name, age, gender);
-                //System.out.println(con.getName()+ con.getAge()+con.getGender());
-                Reporter.log("validation for name "+ name, true);
+                //Config con = new Config(name, age, gender);
+                System.out.println(expectedDataList.get(i-1).getName()+ expectedDataList.get(i-1).getAge()+expectedDataList.get(i-1).getGender());
 
-                Assert.assertEquals(name,con.getName());
-                Reporter.log("validation for age ", true);
-                Assert.assertEquals(age,con.getAge());
-                Reporter.log("validation for Gender", true);
-                AssertJUnit.assertEquals(gender,con.getGender());
+
+                Reporter.log("Validation for name " + name, true);
+                Assert.assertEquals(name, expectedDataList.get(i-1).getName());
+
+                Reporter.log("Validation for age " + age, true);
+                Assert.assertEquals(age, expectedDataList.get(i-1).getAge());
+
+                Reporter.log("Validation for Gender " + gender, true);
+                AssertJUnit.assertEquals(gender, expectedDataList.get(i-1).getGender());
+
                 Thread.sleep(1000);
+
             }
         }
 
     }
+
+    private java.util.List<Config> parseConfigData(String jsonData) {
+        return new ArrayList<>();
+    }
+
+
     @AfterClass
     public void tearDown(){
         driver.close();
