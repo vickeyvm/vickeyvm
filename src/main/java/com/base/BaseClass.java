@@ -10,7 +10,7 @@ public class BaseClass {
     public static WebDriver driver;
 
     public WebDriver initialization() {
-        System.setProperty("webdriver.gecko.driver", "/home/vickey.manwar/Downloads/geckodriver-v0.33.0-linux64/geckodriver");
+        System.setProperty("webdriver.gecko.driver", "/home/vickey.manwar/Desktop/CAWStudios/src/main/resources/driver/geckodriver");
         driver = new FirefoxDriver();
 
         driver.manage().window().maximize();
